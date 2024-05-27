@@ -77,7 +77,7 @@ export const getMultiplePairs = () => {
             const data = await solanaConnection.getSignaturesForAddress(new PublicKey(pairs.data.pairs[0].pairAddress));
             // const data = await solanaConnection.getSignaturesForAddress(new PublicKey(tokenMint));
             const filter_by_time = data.filter((elem: any) => elem.blockTime < pairs.data.pairs[0].pairCreatedAt + 15000);
-
+            
             const sniper: string[] = [];
             console.log("Searching bots......");
             let index = 0;
@@ -132,7 +132,7 @@ export const ownersInfo = async () => {
                     balance
                 )
             }
-        }, 10 * i);
+        }, 60 * i);
         if (i == holders.length)
             process.exit(1)
     })

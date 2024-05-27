@@ -1,9 +1,9 @@
 import { getMultiplePairs, getTokenInfo, ownersInfo } from "./utils";
 
 const main= () => {
-    getMultiplePairs();
+    // getMultiplePairs();
     // getTokenInfo();
-    // ownersInfo();
+    ownersInfo();
 }
 
 main()
