@@ -5,7 +5,7 @@ import { getPdaMetadataKey } from '@raydium-io/raydium-sdk';
 import { getMetadataAccountDataSerializer } from '@metaplex-foundation/mpl-token-metadata';
 import { symbols } from "pino";
 import { getMint, TOKEN_PROGRAM_ID, getAccount, getAssociatedTokenAddress } from "@solana/spl-token";
-const tokenMint = "7y1TrdzE1cEeCgBvgdNB9DViMYdQ7UU2FKhnPDLYa7ae"
+const tokenMint = "9t31CoUG4Xb77AW5exQhQtGy3Kz2MPrNifno6tbJzRTn"
 const solanaConnection = new Connection('https://aged-maximum-pallet.solana-mainnet.quiknode.pro/5d2476aba2f79657eee64c4c71173eb549693756/');
 
 export const getTokenInfo = async () => {
@@ -21,7 +21,6 @@ export const getTokenInfo = async () => {
         console.log(pairs.data.pairs[0]);
         fs.writeFile('myFile.json', JSON.stringify(pairs.data.pairs), function (err) {
             console.log(err);
-
         });
         const pairdata = pairs.data.pairs[0];
 
@@ -76,7 +75,7 @@ export const getMultiplePairs = () => {
 
             const data = await solanaConnection.getSignaturesForAddress(new PublicKey(pairs.data.pairs[0].pairAddress));
             // const data = await solanaConnection.getSignaturesForAddress(new PublicKey(tokenMint));
-            const filter_by_time = data.filter((elem: any) => elem.blockTime < pairs.data.pairs[0].pairCreatedAt + 15000);
+            const filter_by_time = data.filter((elem: any) => elem.blockTime * 1000 < pairs.data.pairs[0].pairCreatedAt + 15000);
             
             const sniper: string[] = [];
             console.log("Searching bots......");
@@ -140,3 +139,28 @@ export const ownersInfo = async () => {
     // console.log(owner_info.length, owner_info.sort());
 }
 
+////////////////// Helius API test ////////////////////////////////
+export const getHelius = async() => {
+    const pairs = await axios.get(`https://api.dexscreener.com/latest/dex/tokens/${tokenMint}`);
+    let url = `https://api.helius.xyz/v0/addresses/${pairs.data.pairs[0].pairAddress}/transactions?api-key=3687620b-0a4f-479f-8c80-db19cc52966d`;
+    let lastSignature = null;
+
+    (async () => {
+        let index = 0;
+        while (true) {
+            if (lastSignature) {
+                url += `&before=${lastSignature}`;
+            }
+            const response = await fetch(url);
+            const transactions = await response.json();
+
+            if (transactions && transactions.length > 0) {
+                console.log("Fetched transactions: ", transactions);
+                lastSignature = transactions[transactions.length - 1].signature;
+            } else {
+                console.log("No more transactions available.");
+                break;
+            }
+        }
+    })();
+}

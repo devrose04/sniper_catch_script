@@ -1,9 +1,10 @@
-import { getMultiplePairs, getTokenInfo, ownersInfo } from "./utils";
+import { getMultiplePairs, getTokenInfo, ownersInfo, getHelius } from "./utils";
 
 const main= () => {
     // getMultiplePairs();
     // getTokenInfo();
-    ownersInfo();
+    // ownersInfo();
+    getHelius();
 }
 
 main()
